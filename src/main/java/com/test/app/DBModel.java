@@ -54,11 +54,17 @@ public class DBModel extends Model {
                     Node newNode = new Node();
                     newNode.setId(n.getId());
                     newNode.setParentId(n.getParentId());
-                    get(n.getParentId()).add(newNode);
+                    Node parent = get(n.getParentId());
+                    if (parent == null) {
+                        return null;
+                    }
+                    parent.add(newNode);
                     return newNode;
                 });
-                node.setDeleted(n.isDeleted());
-                node.setValue(n.getValue());
+                if (node != null) {
+                    node.setDeleted(n.isDeleted());
+                    node.setValue(n.getValue());
+                }
             });
         fireModelChanged();
     }
