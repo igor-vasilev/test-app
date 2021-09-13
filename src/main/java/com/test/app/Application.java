@@ -22,13 +22,17 @@ public class Application extends JPanel {
         dbTree.setBounds(300, 10, 200, 500);
         expandAll(dbTree);
         add(dbTree);
-        
+
         JButton b = new JButton("<<");
         b.addActionListener(e -> doWithSelectedNode(dbTree, node -> {
-            cache.push(new Node(node));
-            expandAll(cacheTree);
+            String error = cache.push(new Node(node));
+            if (error == null) {
+                expandAll(cacheTree);
+            } else {
+                JOptionPane.showMessageDialog(this, error, "Error", JOptionPane.ERROR_MESSAGE);
+            }
         }));
-        b.setBounds(230, 200, 50, 25);
+        b.setBounds(225, 200, 60, 25);
         add(b);
 
         b = new JButton("+");

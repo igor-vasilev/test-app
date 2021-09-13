@@ -14,36 +14,36 @@ public class CacheModel extends Model {
         nextId = 0;
     }
 
-    void push(Node node) {
+    String push(Node node) {
+        if (containsKey(node.getId())) {
+            return "Selected node is already in the cache";
+        }
+
         // unless node is adding to deleted parent
         if (isNodeAlive(node)) {
 
-            Node hit = get(node.getId());
-            if (hit != null) {
-                // node is already in the cache
-                // update its state
-                hit.setDeleted(false);
-                hit.setValue(node.getValue());
-            } else {
-                // add node to cache
-            
-                // search for possible children and transfer ownership from root to the new node
-                Iterator<Node> children = root.iterator();
-                while (children.hasNext()) {
-                    Node child = children.next();
-                    if (child.getParentId() == node.getId()) {
-                        node.add(child);
-                        children.remove();
-                    }
-                }
+            // add node to cache
 
-                // add to root if parent isn't found in the cache
-                getOrDefault(node.getParentId(), root)
-                    .add(node);
-            
-                put(node.getId(), node);
+            // search for possible children and transfer ownership from root to the new node
+            Iterator<Node> children = root.iterator();
+            while (children.hasNext()) {
+                Node child = children.next();
+                if (child.getParentId() == node.getId()) {
+                    node.add(child);
+                    children.remove();
+                }
             }
+
+            // add to root if parent isn't found in the cache
+            getOrDefault(node.getParentId(), root)
+                .add(node);
+
+            put(node.getId(), node);
+
             fireModelChanged();
+            return null;
+        } else {
+            return "Node cannot be added to removed parent";
         }
     }
 
