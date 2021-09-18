@@ -4,6 +4,7 @@ import javax.swing.*;
 import javax.swing.tree.*;
 import java.awt.event.*;
 import java.util.function.Consumer;
+import java.util.List;
 
 public class Application extends JPanel {
     private CacheModel cache;
@@ -71,8 +72,12 @@ public class Application extends JPanel {
         b = new JButton("Apply");
         b.setToolTipText("Apply changes");
         b.addActionListener(e -> {
-            db.update(cache.makeCopy());
+            List<Node> removed = db.update(cache.makeCopy());
             expandAll(dbTree);
+            if (!removed.isEmpty()) {
+                cache.removeNodes(removed);
+                expandAll(cacheTree);
+            }
         });
         b.setBounds(300, 520, 80, 25);
         add(b);

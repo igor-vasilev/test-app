@@ -53,7 +53,6 @@ public class Node extends ArrayList<Node> {
         if (this.deleted != deleted) {
             this.deleted = deleted;
             if (deleted) {
-                setValue("(" + value + ")");
                 forEach(child -> child.setDeleted(true));
             }
         }
@@ -66,7 +65,7 @@ public class Node extends ArrayList<Node> {
 
     @Override
     public String toString() {
-        return value;
+        return deleted?("(" + value + ")"):value;
     }
 
     @Override

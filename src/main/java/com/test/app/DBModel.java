@@ -1,6 +1,7 @@
 package com.test.app;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class DBModel extends Model {
 
@@ -46,7 +47,7 @@ public class DBModel extends Model {
         });
     }
 
-    void update(List<Node> nodes) {
+    List<Node> update(List<Node> nodes) {
         nodes.stream()
             .filter(this::isNodeAlive)
             .forEach(n -> {
@@ -67,5 +68,15 @@ public class DBModel extends Model {
                 }
             });
         fireModelChanged();
+
+        return nodes.stream()
+            .filter(n -> {
+                if (n.isDeleted()) {
+                    return false;
+                }
+                Node node = get(n.getId());
+                return node == null || node.isDeleted();
+            })
+            .collect(Collectors.toList());
     }
 }

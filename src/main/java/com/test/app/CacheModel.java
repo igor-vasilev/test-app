@@ -64,6 +64,11 @@ public class CacheModel extends Model {
         fireModelChanged();
     }
 
+    void removeNodes(List<Node> nodes) {
+        nodes.forEach(n -> get(n.getId()).setDeleted(true));
+        fireModelChanged();
+    }
+
     List<Node> makeCopy() {
         return values().stream()
             // make db's life easy by discarding all nodes from a deleted branch except its root
